@@ -2,6 +2,7 @@ import vazirFont from "@/constants/localFonts";
 import '../../globals.css'
 import '../../style.css'
 
+
 import {Toaster} from "react-hot-toast";
 import Provider from "../../(panel)/Provider";
 import Footer from "@/components/Footer";
@@ -14,23 +15,25 @@ export const metadata = {
 }
 
 export default function RootLayout({children}) {
-    return (<html lang="en" dir={'rtl'}>
-    <body className={`${vazirFont.variable} font-sans`} suppressHydrationWarning={true}>
-    <Provider>
-        <div className="">
-            <Header/>
-            <div className="grid grid-cols-12 h-screen">
-                <div className="col-span-12 lg:col-span-3 xl:col-span-2 hidden lg:block ">
-                    <SideBar/>
-                </div>
-                <div className="bg-gray-100/60 col-span-12 lg:col-span-9 xl:col-span-10 h-screen flex flex-col">
-                    {children}
+    return (
+        <html lang="en" dir={'rtl'}>
+        <body className={`${vazirFont.variable} font-sans`} suppressHydrationWarning={true}>
+        <Provider>
+            <div className="">
+                <Header/>
+                <div className="grid grid-cols-12 h-screen">
+                    <div className="col-span-12 lg:col-span-3 xl:col-span-2 hidden lg:block ">
+                        <SideBar/>
+                    </div>
+                    <div className={`bg-gray-100/60 col-span-12 lg:col-span-9 xl:col-span-10 h-screen flex flex-col h-full`}>
+                        {children}
+                    </div>
                 </div>
             </div>
-        </div>
-        <Footer/>
-        <Toaster/>
-    </Provider>
-    </body>
-    </html>)
+            <Footer/>
+            <Toaster/>
+        </Provider>
+        </body>
+        </html>
+    )
 }

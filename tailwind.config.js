@@ -12,9 +12,11 @@ function withOpacity(variableName) {
 
 module.exports = {
     content: [
+        // "./src/**/*.{html,js}",
         "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
         "./src/common/**/*.{js,ts,jsx,tsx,mdx}",
         "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+        "./node_modules/react-tailwindcss-select/dist/index.esm.js"
     ],
     theme: {
         extend: {
@@ -57,5 +59,9 @@ module.exports = {
         },
 
     },
-    plugins: [require("@tailwindcss/forms")],
+    plugins: [
+        require("@tailwindcss/forms"),
+        require("tw-elements/dist/plugin.cjs")
+    ],
+
 };

@@ -1,3 +1,4 @@
+'use client'
 import vazirFont from "@/constants/localFonts";
 import '../globals.css'
 import '../style.css'
@@ -6,6 +7,7 @@ import {Toaster} from "react-hot-toast";
 import Provider from "./Provider";
 import Footer from "@/components/Footer";
 import SideBar from "@/app/(panel)/SideBar";
+import {useEffect} from "react";
 
 
 export const metadata = {
@@ -13,14 +15,17 @@ export const metadata = {
 }
 
 export default function RootLayout({children}) {
+    useEffect(() => {
+        import('preline')
+    }, [])
     return (<html lang="en" dir={'rtl'}>
     <body className={`${vazirFont.variable} font-sans`} suppressHydrationWarning={true}>
     <Provider>
         <Header/>
-        <div className="grid grid-cols-4 bg-white h-screen">
-            <div className="col-span-1 bg-gray-100 overflow-y-auto ">
-                <SideBar/>
-            </div>
+        <div className="grid grid-cols-4 bg-white h-screen ">
+
+            <SideBar/>
+
             <div className="col-span-3 overflow-y-auto p-4">
                 {children}
             </div>

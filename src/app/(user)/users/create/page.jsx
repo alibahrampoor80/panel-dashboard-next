@@ -16,8 +16,6 @@ import TextareaOption from "@/common/textareaOption";
 
 import DtPicker, {convertToFa} from 'react-calendar-datetime-picker'
 import 'react-calendar-datetime-picker/dist/index.css'
-import {log} from "next/dist/server/typescript/utils";
-import Select from "react-tailwindcss-select";
 
 const Register = () => {
 
@@ -106,7 +104,7 @@ const Register = () => {
 
     return <>
 
-        <div className="p-4 w-full block">
+        <div className="p-4  block">
 
             <form onSubmit={formik.handleSubmit} className="form w-100 space-y-7 h-auto" noValidate="novalidate"
                   id="kt_sign_up_form">
@@ -116,14 +114,16 @@ const Register = () => {
                         <TabsHeader>
 
                             <Tab onClick={() => setActiveTab('حساب کاربری')} key={'account'} value={'حساب کاربری'}>
-                                <button className={`flex mx-auto ${activeTab === 'حساب کاربری' ? "text-red-500" : ""}`}
-                                        type={'button'}>
+                                <button
+                                    className={`flex mx-auto relative z-20 ${activeTab === 'حساب کاربری' ? "text-red-500" : ""}`}
+                                    type={'button'}>
                                     <UserIcon className={'w-6 h-6'}/> حساب کاربری
                                 </button>
                             </Tab>
                             <Tab onClick={() => setActiveTab('پروفایل')} key={'profile'} value={'پروفایل'}>
-                                <button className={`flex mx-auto ${activeTab === 'پروفایل' ? "text-red-500" : ""}`}
-                                        type={'button'}>
+                                <button
+                                    className={`flex mx-auto relative z-20 ${activeTab === 'پروفایل' ? "text-red-500" : ""}`}
+                                    type={'button'}>
                                     <UserCircleIcon className={'w-6 h-6'}/>
                                     پروفایل
 
@@ -131,164 +131,166 @@ const Register = () => {
                             </Tab>
                             <Tab onClick={() => setActiveTab('نقش')} key={'role'} value={'نقش'}>
                                 <button type={'button'}
-                                        className={`flex mx-auto ${activeTab === 'نقش' ? "text-red-500" : ""}`}>
+                                        className={`flex mx-auto relative z-20 ${activeTab === 'نقش' ? "text-red-500" : ""}`}>
                                     <EyeIcon className={'w-6 h-6'}/>
                                     نقش
                                 </button>
                             </Tab>
                         </TabsHeader>
-                        <TabsBody
-                            animate={{
+                        <div className="w-[700px] mx-auto">
+                            <TabsBody animate={{
                                 initial: {y: 250},
                                 mount: {y: 0},
                                 unmount: {y: 250},
                             }}>
 
-                            <TabPanel key={'account'} value={'حساب کاربری'}>
-                                <div className="grid grid-cols-2 row-span-6 space-y-5">
-                                    <div className="col-span-12 flex  max-sm:flex-wrap">
-                                        <Input formik={formik} name={'firstname'} label={'نام'}
-                                               className={'w-1/2 mx-2 md:w-full max-sm:w-full'}/>
-                                        <Input formik={formik} name={'lastname'} label={'نام خانوادگی'}
-                                               className={'w-1/2 mx-2 md:w-full max-sm:w-full'}/>
-                                    </div>
-                                    <div className="grid grid-cols-1 row-span-12 col-span-12 flex">
-                                        <Input formik={formik} name={'fullname'} label={'نام کاربری'} type={'text'}
-                                               className={'mx-2'}/>
-                                    </div>
-                                    <div className="col-span-12 flex  max-sm:flex-wrap">
-
-                                        <Input formik={formik} name={'password'} label={'کلمه ی عبور'}
-                                               type={'password'} className={'w-1/2 mx-2 md:w-full max-sm:w-full'}/>
-                                        <Input formik={formik} name={'passwordConfirm'} label={'تکرار کلمه ی عبور'}
-                                               type={'password'} className={'w-1/2 mx-2 md:w-full max-sm:w-full'}/>
-
-                                    </div>
-
-                                    <div className="">
-                                        <p className={'font-bold'}>جنسیت:</p>
-                                        <ul className="grid w-full gap-6 md:grid-cols-2">
-                                            <RadioInput name={'gender'} formik={formik} radioOption={radioOption}/>
-                                        </ul>
-                                    </div>
-
-
-                                </div>
-
-                            </TabPanel>
-                            <TabPanel key={'profile'} value={'پروفایل'}>
-                                <div className="grid grid-cols-2 row-span-6 space-y-5 ">
-                                    <div className="col-span-12 flex  max-sm:flex-wrap">
-                                        <Input formik={formik} name={'mobile'} label={'موبایل'}
-                                               className={'w-1/2 mx-2 md:w-full max-sm:w-full'}/>
-                                        <Input formik={formik} name={'tel_number'} label={'شماره ثابت'}
-                                               className={'w-1/2 mx-2 md:w-full max-sm:w-full'}/>
-                                    </div>
-
-                                    <div className="grid grid-cols-1 row-span-12 col-span-12 ">
-                                        <Input formik={formik} name={'national_code'} type={'text'} className={'mx-2'}
-                                               label={'کد ملی'}/>
-                                    </div>
-
-                                    <div className="grid grid-cols-12 row-span-12 col-span-12 gap-4">
-                                        <div className="col-span-6">
-                                            <SelectOption formik={formik}
-                                                          placeholder={'استان'}
-                                                          onChange={value => formik.setFieldValue('province', value.value)}
-                                                          value={formik.values.province}
-                                                          options={optionsSelect}
-                                                          name={'province'}
-                                            />
+                                <TabPanel key={'account'} value={'حساب کاربری'}>
+                                    <div className="grid grid-cols-2 row-span-6 space-y-5">
+                                        <div className="col-span-12 flex  max-sm:flex-wrap">
+                                            <Input formik={formik} name={'firstname'} label={'نام'}
+                                                   className={'w-1/2 mx-2 md:w-full max-sm:w-full'}/>
+                                            <Input formik={formik} name={'lastname'} label={'نام خانوادگی'}
+                                                   className={'w-1/2 mx-2 md:w-full max-sm:w-full'}/>
                                         </div>
-                                        <div className="col-span-6">
-                                            <SelectOption formik={formik}
-                                                          placeholder={'شهر'}
-                                                          onChange={value => formik.setFieldValue('city', value.value)}
-                                                          value={formik.values.city}
-                                                          options={optionsSelect}
-                                                          name={'city'}
-                                            />
+                                        <div className="grid grid-cols-1 row-span-12 col-span-12 flex">
+                                            <Input formik={formik} name={'fullname'} label={'نام کاربری'} type={'text'}
+                                                   className={'mx-2'}/>
                                         </div>
-                                    </div>
+                                        <div className="col-span-12 flex  max-sm:flex-wrap">
 
-                                    <div className="grid grid-cols-1 row-span-12 col-span-12 ">
-                                        <TextareaOption formik={formik} name={'address'} label={'آدرس'}/>
-                                    </div>
-
-                                    <div className="grid grid-cols-12 row-span-12 col-span-12 gap-4">
-                                        <div className="col-span-6">
-                                            <SelectOption formik={formik}
-                                                          placeholder={'درجه تحصیلی'}
-                                                          onChange={value => formik.setFieldValue('level_educational', value.value)}
-
-                                                          value={formik.values.level_educational}
-                                                          options={optionsSelect}
-                                                          name={'level_educational'}
-                                            />
-                                        </div>
-                                        <div className="col-span-6">
-                                            <SelectOption formik={formik}
-                                                          placeholder={'رشته ی تحصیلی '}
-                                                          onChange={value => formik.setFieldValue('Field_of_Study', value.value)}
-                                                          value={formik.values.Field_of_Study}
-                                                          options={optionsSelect}
-                                                          name={'Field_of_Study'}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="grid grid-cols-12 row-span-12 col-span-12 gap-4">
-                                        <div className="col-span-6">
-                                            <label htmlFor="brithDay">تاریخ تولد</label>
-                                            <DtPicker
-                                                id={'brithDay'}
-                                                onChange={value => formik.setFieldValue('date_brith_day', convertToFa(value))}
-                                                inputClass={'textField__input !h-[40px]'}
-                                                placeholder={"تاریخ تولد"}
-                                                fromLabel={"تاریخ تولد"}
-                                                toLabel={"تاریخ تولد"}
-                                                local={'fa'}
-                                                type='single'
-                                                // withTime
-                                                showWeekend
-                                            />
-                                        </div>
-                                        <div className="col-span-6">
-                                            <Input formik={formik} label={'دانشگاه تحصیل'} name={"university"}/>
-
-                                        </div>
-                                    </div>
-
-                                    <div className="grid grid-cols-12 row-span-12 col-span-12 gap-4">
-                                        <div className="col-span-12">
-                                            {/*<SelectOption formik={formik} name={'expertise'}*/}
-                                            {/*              options={optionsSelect}*/}
-                                            {/*              onChange={value => formik.setFieldValue('expertise', value.value)}*/}
-                                            {/*              placeholder={'تخصص'}*/}
-                                            {/*              value={formik.values.expertise}*/}
-                                            {/*              isMultiple={true}*/}
-                                            {/*/>*/}
-
+                                            <Input formik={formik} name={'password'} label={'کلمه ی عبور'}
+                                                   type={'password'} className={'w-1/2 mx-2 md:w-full max-sm:w-full'}/>
+                                            <Input formik={formik} name={'passwordConfirm'} label={'تکرار کلمه ی عبور'}
+                                                   type={'password'} className={'w-1/2 mx-2 md:w-full max-sm:w-full'}/>
 
                                         </div>
 
+                                        <div className="">
+                                            <p className={'font-bold'}>جنسیت:</p>
+                                            <ul className="grid w-full gap-6 md:grid-cols-2">
+                                                <RadioInput name={'gender'} formik={formik} radioOption={radioOption}/>
+                                            </ul>
+                                        </div>
+
+
                                     </div>
 
-                                    <div className="col-span-12 flex max-sm:flex-wrap">
-                                        {/*<Input formik={formik} name={'mobile'} label={'موبایل'}*/}
-                                        {/*       className={'w-1/2 mx-2 md:w-full max-sm:w-full'}/>*/}
-                                        {/*<Input formik={formik} name={'tel_number'} label={'شماره ثابت'}*/}
-                                        {/*       className={'w-1/2 mx-2 md:w-full max-sm:w-full'}/>*/}
+                                </TabPanel>
+                                <TabPanel key={'profile'} value={'پروفایل'}>
+                                    <div className="grid grid-cols-2 row-span-6 space-y-5 ">
+                                        <div className="col-span-12 flex  max-sm:flex-wrap">
+                                            <Input formik={formik} name={'mobile'} label={'موبایل'}
+                                                   className={'w-1/2 mx-2 md:w-full max-sm:w-full'}/>
+                                            <Input formik={formik} name={'tel_number'} label={'شماره ثابت'}
+                                                   className={'w-1/2 mx-2 md:w-full max-sm:w-full'}/>
+                                        </div>
+
+                                        <div className="grid grid-cols-1 row-span-12 col-span-12 ">
+                                            <Input formik={formik} name={'national_code'} type={'text'}
+                                                   className={'mx-2'}
+                                                   label={'کد ملی'}/>
+                                        </div>
+
+                                        <div className="grid grid-cols-12 row-span-12 col-span-12 gap-4">
+                                            <div className="col-span-6">
+                                                <SelectOption formik={formik}
+                                                              placeholder={'استان'}
+                                                              onChange={value => formik.setFieldValue('province', value.value)}
+                                                              value={formik.values.province}
+                                                              options={optionsSelect}
+                                                              name={'province'}
+                                                />
+                                            </div>
+                                            <div className="col-span-6">
+                                                <SelectOption formik={formik}
+                                                              placeholder={'شهر'}
+                                                              onChange={value => formik.setFieldValue('city', value.value)}
+                                                              value={formik.values.city}
+                                                              options={optionsSelect}
+                                                              name={'city'}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-1 row-span-12 col-span-12 ">
+                                            <TextareaOption formik={formik} name={'address'} label={'آدرس'}/>
+                                        </div>
+
+                                        <div className="grid grid-cols-12 row-span-12 col-span-12 gap-4">
+                                            <div className="col-span-6">
+                                                <SelectOption formik={formik}
+                                                              placeholder={'درجه تحصیلی'}
+                                                              onChange={value => formik.setFieldValue('level_educational', value.value)}
+
+                                                              value={formik.values.level_educational}
+                                                              options={optionsSelect}
+                                                              name={'level_educational'}
+                                                />
+                                            </div>
+                                            <div className="col-span-6">
+                                                <SelectOption formik={formik}
+                                                              placeholder={'رشته ی تحصیلی '}
+                                                              onChange={value => formik.setFieldValue('Field_of_Study', value.value)}
+                                                              value={formik.values.Field_of_Study}
+                                                              options={optionsSelect}
+                                                              name={'Field_of_Study'}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-12 row-span-12 col-span-12 gap-4">
+                                            <div className="col-span-6">
+                                                <label htmlFor="brithDay">تاریخ تولد</label>
+                                                <DtPicker
+                                                    id={'brithDay'}
+                                                    onChange={value => formik.setFieldValue('date_brith_day', convertToFa(value))}
+                                                    inputClass={'textField__input !h-[49px]'}
+                                                    placeholder={"تاریخ تولد"}
+                                                    fromLabel={"تاریخ تولد"}
+                                                    toLabel={"تاریخ تولد"}
+                                                    local={'fa'}
+                                                    type='single'
+                                                    // withTime
+                                                    showWeekend
+                                                />
+                                            </div>
+                                            <div className="col-span-6">
+                                                <Input formik={formik} label={'دانشگاه تحصیل'} name={"university"}/>
+
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-12 row-span-12 col-span-12 gap-4">
+                                            <div className="col-span-12">
+                                                {/*<SelectOption formik={formik} name={'expertise'}*/}
+                                                {/*              options={optionsSelect}*/}
+                                                {/*              onChange={value => formik.setFieldValue('expertise', value.value)}*/}
+                                                {/*              placeholder={'تخصص'}*/}
+                                                {/*              value={formik.values.expertise}*/}
+                                                {/*              isMultiple={true}*/}
+                                                {/*/>*/}
+
+
+                                            </div>
+
+                                        </div>
+
+                                        <div className="col-span-12 flex max-sm:flex-wrap">
+                                            {/*<Input formik={formik} name={'mobile'} label={'موبایل'}*/}
+                                            {/*       className={'w-1/2 mx-2 md:w-full max-sm:w-full'}/>*/}
+                                            {/*<Input formik={formik} name={'tel_number'} label={'شماره ثابت'}*/}
+                                            {/*       className={'w-1/2 mx-2 md:w-full max-sm:w-full'}/>*/}
+                                        </div>
+
                                     </div>
 
-                                </div>
+                                </TabPanel>
+                                <TabPanel key={'role'} value={'نقش'}>
+                                    {'نقش'}
+                                </TabPanel>
 
-                            </TabPanel>
-                            <TabPanel key={'role'} value={'نقش'}>
-                                {'نقش'}
-                            </TabPanel>
-
-                        </TabsBody>
+                            </TabsBody>
+                        </div>
                     </Tabs>
 
 
@@ -309,8 +311,8 @@ const Register = () => {
                     {/*</div>*/}
 
 
-                </div>
                 <button type={'submit'} disabled={!formik.isValid} className={'btn--primary'}>submit</button>
+                </div>
             </form>
 
         </div>

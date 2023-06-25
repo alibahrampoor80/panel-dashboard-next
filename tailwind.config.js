@@ -16,7 +16,8 @@ module.exports = {
         "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
         "./src/common/**/*.{js,ts,jsx,tsx,mdx}",
         "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
-        "./node_modules/react-tailwindcss-select/dist/index.esm.js"
+        "./node_modules/react-tailwindcss-select/dist/index.esm.js",
+        'node_modules/preline/dist/*.js',
     ],
     theme: {
         extend: {
@@ -61,7 +62,7 @@ module.exports = {
     },
     plugins: [
         require("@tailwindcss/forms"),
-        require("tw-elements/dist/plugin.cjs")
+        require('preline/plugin'),
     ],
 
 };

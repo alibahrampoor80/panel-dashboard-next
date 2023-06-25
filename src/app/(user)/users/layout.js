@@ -1,3 +1,4 @@
+'use client'
 import vazirFont from "@/constants/localFonts";
 import '../../globals.css'
 import '../../style.css'
@@ -8,6 +9,7 @@ import Provider from "../../(panel)/Provider";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import SideBar from "@/app/(panel)/SideBar";
+import {useEffect} from "react";
 
 
 export const metadata = {
@@ -15,6 +17,11 @@ export const metadata = {
 }
 
 export default function RootLayout({children}) {
+
+    useEffect(() => {
+        import('preline')
+    }, [])
+
     return (
         <html lang="en" dir={'rtl'}>
         <body className={`${vazirFont.variable} font-sans`} suppressHydrationWarning={true}>
@@ -22,10 +29,10 @@ export default function RootLayout({children}) {
             <div className="">
                 <Header/>
                 <div className="grid grid-cols-12 h-screen">
-                    <div className="col-span-12 lg:col-span-3 xl:col-span-2 hidden lg:block ">
+                    <div className="col-span-12 lg:col-span-3 xl:col-span-2 hidden lg:block h-screen">
                         <SideBar/>
                     </div>
-                    <div className={`bg-gray-100/60 col-span-12 lg:col-span-9 xl:col-span-10 h-screen flex flex-col h-full`}>
+                    <div className={`bg-gray-100/60 col-span-12 lg:col-span-9 xl:col-span-10 h-screen flex flex-col rounded-xl`}>
                         {children}
                     </div>
                 </div>

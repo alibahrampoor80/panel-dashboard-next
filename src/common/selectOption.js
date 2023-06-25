@@ -13,7 +13,6 @@ const SelectOption = ({onChange, options, value, placeholder, formik, name, isMu
         <label htmlFor={name}>{placeholder}</label>
         <Select
             id={name}
-
             isMultiple={isMultipleVal}
             placeholder={placeholder}
             primaryColor={'indigo'}

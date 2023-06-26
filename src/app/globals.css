@@ -30,8 +30,11 @@
         --color-error: 255, 71, 87;
         --color-red-500: 239, 68, 68;
         --color-red-300: 252, 165, 165;
+
     }
 }
+
+
 
 @layer components {
     .textField__input {
@@ -78,6 +81,25 @@ body {
     background-color: var(--background-app-rgb);
 }
 
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
 
 @keyframes spinner {
     0% {

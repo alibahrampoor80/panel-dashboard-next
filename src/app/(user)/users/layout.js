@@ -10,6 +10,7 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import SideBar from "@/app/(panel)/SideBar";
 import {useEffect} from "react";
+import {ThemeProvider} from "next-themes";
 
 
 export const metadata = {
@@ -23,23 +24,25 @@ export default function RootLayout({children}) {
     }, [])
 
     return (
-        <html lang="en" dir={'rtl'}>
+        <html lang="en" dir={'rtl'} className={'dark'}>
         <body className={`${vazirFont.variable} font-sans`} suppressHydrationWarning={true}>
-        <Provider>
-            <div className="">
-                <Header/>
-                <div className="grid grid-cols-12 h-screen">
-                    <div className="col-span-12 lg:col-span-3 xl:col-span-2 hidden lg:block h-screen">
-                        <SideBar/>
-                    </div>
-                    <div className={`bg-gray-100/60 col-span-12 lg:col-span-9 xl:col-span-10 h-screen flex flex-col rounded-xl`}>
-                        {children}
+        {/*<Provider>*/}
+            <ThemeProvider attribute={'class'}>
+                <div className="">
+                    <Header/>
+                    <div className="grid grid-cols-12 bg-white h-screen ">
+                        <aside className="col-span-12 lg:col-span-3 xl:col-span-2 hidden lg:block">
+                            <SideBar/>
+                        </aside>
+                        <div className={`col-span-12 lg:col-span-9 xl:col-span-10 h-screen flex flex-col`}>
+                            {children}
+                        </div>
                     </div>
                 </div>
-            </div>
+            </ThemeProvider>
             <Footer/>
             <Toaster/>
-        </Provider>
+        {/*</Provider>*/}
         </body>
         </html>
     )

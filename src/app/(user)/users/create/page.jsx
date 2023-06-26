@@ -104,7 +104,7 @@ const Register = () => {
 
     return <>
 
-        <div className="p-4  block">
+        <div className="bg-gray-100/60 rounded-tr-3xl p-4 md:p-6 lg:p-10 overflow-y-auto mt-10 h-screen">
 
             <form onSubmit={formik.handleSubmit} className="form w-100 space-y-7 h-auto" noValidate="novalidate"
                   id="kt_sign_up_form">

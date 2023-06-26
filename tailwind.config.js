@@ -19,6 +19,7 @@ module.exports = {
         "./node_modules/react-tailwindcss-select/dist/index.esm.js",
         'node_modules/preline/dist/*.js',
     ],
+    darkMode: 'class',
     theme: {
         extend: {
             colors: {

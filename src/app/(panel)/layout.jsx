@@ -22,11 +22,11 @@ export default function RootLayout({children}) {
     <body className={`${vazirFont.variable} font-sans`} suppressHydrationWarning={true}>
     <Provider>
         <Header/>
-        <div className="grid grid-cols-4 bg-white h-screen ">
-
-            <SideBar/>
-
-            <div className="col-span-3 overflow-y-auto p-4">
+        <div className="grid grid-cols-12 bg-white h-screen ">
+            <aside className="col-span-12 lg:col-span-3 xl:col-span-2 hidden lg:block">
+                <SideBar/>
+            </aside>
+            <div className="col-span-12 lg:col-span-9 xl:col-span-10 h-screen flex flex-col">
                 {children}
             </div>
         </div>

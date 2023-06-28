@@ -8,6 +8,7 @@ import Provider from "./Provider";
 import Footer from "@/components/Footer";
 import SideBar from "@/app/(panel)/SideBar";
 import {useEffect} from "react";
+import {ThemeProvider} from "next-themes";
 
 
 export const metadata = {
@@ -18,21 +19,25 @@ export default function RootLayout({children}) {
     useEffect(() => {
         import('preline')
     }, [])
-    return (<html lang="en" dir={'rtl'}>
-    <body className={`${vazirFont.variable} font-sans`} suppressHydrationWarning={true}>
-    <Provider>
-        <Header/>
-        <div className="grid grid-cols-12 bg-white h-screen ">
-            <aside className="col-span-12 lg:col-span-3 xl:col-span-2 hidden lg:block">
-                <SideBar/>
-            </aside>
-            <div className="col-span-12 lg:col-span-9 xl:col-span-10 h-screen flex flex-col">
-                {children}
-            </div>
-        </div>
-        <Footer/>
-        <Toaster/>
-    </Provider>
-    </body>
-    </html>)
+    return (
+        <html lang="en" dir={'rtl'}>
+        <body className={`${vazirFont.variable} font-sans`} suppressHydrationWarning={true}>
+        <Provider>
+            <ThemeProvider attribute={'class'}>
+                <Header/>
+                <div className="grid grid-cols-12 bg-white h-screen ">
+                    <aside className="col-span-12 lg:col-span-3 xl:col-span-2 hidden lg:block">
+                        <SideBar/>
+                    </aside>
+                    <div className="col-span-12 lg:col-span-9 xl:col-span-10 h-screen flex flex-col">
+                        {children}
+                    </div>
+                </div>
+            </ThemeProvider>
+            <Footer/>
+            <Toaster/>
+        </Provider>
+        </body>
+        </html>
+    )
 }

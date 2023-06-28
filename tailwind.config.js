@@ -18,6 +18,7 @@ module.exports = {
         "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
         "./node_modules/react-tailwindcss-select/dist/index.esm.js",
         'node_modules/preline/dist/*.js',
+       'react-widgets/styles.css'
     ],
     darkMode: 'class',
     theme: {
@@ -64,6 +65,7 @@ module.exports = {
     plugins: [
         require("@tailwindcss/forms"),
         require('preline/plugin'),
+        // require('react-widgets-tailwind')
     ],
 
 };

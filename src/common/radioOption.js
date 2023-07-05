@@ -8,7 +8,7 @@ const RadioInput = ({label, name, formik, radioOption}) => {
         {
             radioOption.map((item) => (
                 <React.Fragment key={item.value}>
-                    <li>
+                    <li className={'mb-2'}>
                         <input {...formik.getFieldProps('gender')} type="radio"
                                id={item.value}
                                value={item.value}

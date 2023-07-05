@@ -17,32 +17,33 @@ import toast from "react-hot-toast";
 
 import {useSkills} from "@/hooks/useSkills";
 import {Button} from "@mui/material";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 import Avatar from "@mui/material/Avatar";
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import ListItemText from '@mui/material/ListItemText';
-import Select from '@mui/material/Select';
-import Checkbox from '@mui/material/Checkbox';
+
 import {useStates} from "@/hooks/useStateCity";
 
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
 
 import "react-widgets/styles.css";
 import DropdownList from "react-widgets/DropdownList";
+import Multiselect from "react-widgets/Multiselect";
+import {getStatesSlugCities} from "@/services/stateCityService";
+import {useEducationLevel, useReshte} from "@/hooks/useEducation";
+import {getEducationLevel} from "@/services/educationService";
+import {useRoles} from "@/hooks/useRols";
 
 const Register = () => {
 
     const {data: skillsData, error, isLoading: isLoadingSkills} = useSkills()
     const {data: statesData, isLoading: isLoadingStates} = useStates()
+    const {data: EducationLevelData, isLoading: isLoadingEducationLevel} = useEducationLevel()
+    const {data: dataReshte, isLoading: isLoadingReshte} = useReshte()
+    const {data: dataRoles, isLoading: isLoadingRoles} = useRoles()
+
 
     const initialValues = {
-        firstname: '',
-        lastname: "",
+        first_name: '',
+        last_name: "",
         username: '',
         email: '',
         password: '',
@@ -56,15 +57,18 @@ const Register = () => {
         address: "",
         birth_date: "",
         college: "",
-        image: "",
-        skill: ""
+        picture: "",
+        skill: "",
+        education_level: "",
+        major: "",
+        role: []
     }
 
-    const onSubmit = async (...values) => {
+    const onSubmit = async (values) => {
 
         const myData = new FormData()
-        myData.append('firstname', values.firstname)
-        myData.append('lastname', values.lastname)
+        myData.append('first_name', values.first_name)
+        myData.append('last_name', values.last_name)
         myData.append('username', values.username)
         myData.append('email', values.email)
         myData.append('password', values.password)
@@ -78,9 +82,13 @@ const Register = () => {
         myData.append('address', values.address)
         myData.append('college', values.college)
         myData.append('birth_date', values.birth_date)
+        myData.append('role', values.role)
+        myData.append('picture', values.picture)
+        myData.append('skill', values.skill)
+        myData.append('education_level', values.education_level)
+        myData.append('major', values.major)
 
-        // console.log(myData)
-        // console.log(values)
+        console.log(myData)
         try {
             const data = await http.post('/users/create/', myData, {
                 headers: {
@@ -118,8 +126,8 @@ const Register = () => {
         confirm_password: Yup.string().required('تکرار پسورد اجباری میباشد')
             .oneOf([Yup.ref('password'), null], 'تکرار کلمه ی عبور برابری ندارد!'),
 
-        firstname: Yup.string().required('فیلد نام اجباری میباشد').min(3, 'لطفا بیشتر از 3 کارکتر وارد کنید'),
-        lastname: Yup.string().required('فیلد نام خانوادگی اجباری میباشد')
+        first_name: Yup.string().required('فیلد نام اجباری میباشد').min(3, 'لطفا بیشتر از 3 کارکتر وارد کنید'),
+        last_name: Yup.string().required('فیلد نام خانوادگی اجباری میباشد')
             .min(5, 'لطفا بیشتر از 5 کارکتر وارد کنید'),
         gender: Yup.string().required('انتخاب جنسیت مهم است'),
         national_code: Yup.string().required('کد ملی اجباری است')
@@ -133,17 +141,21 @@ const Register = () => {
         // level_educational: Yup.string().required('انتخاب مقطع تحصیلی اجباری میباشد'),
         college: Yup.string().required('انتخاب دانشگاه اجباری میباشد'),
 
-        image: Yup.mixed().required('ارسال عکس اجباری میباشد')
+        picture: Yup.mixed().required('ارسال عکس اجباری میباشد')
             .test(
-                "fileSize",
-                "File too large",
-                value => value && value.size <= FILE_SIZE
-            )
-            .test(
-                "fileFormat",
-                "Unsupported Format",
+                "فقط عکس مجاز است",
+                "فقط عکس مجاز است",
                 value => value && SUPPORTED_FORMATS.includes(value.type)
             )
+            .test(
+                "fileSize",
+                "فایل ارسالی باید کمتر از 1 مگابایت باشد ",
+                value => value && value.size <= FILE_SIZE
+            ),
+
+        skill: Yup.array()
+            .min(1, 'انتخاب مهارت اجباری میباشد')
+            .required('انتخاب مهارت اجباری میباشد')
     })
 
     const formik = useFormik({
@@ -153,48 +165,63 @@ const Register = () => {
 
     })
     console.log(formik.values)
-    // console.log(formik.errors)
 
 
     const radioOption = [
-        {label: "خانم", value: "female",},
-        {label: "آقا", value: "male",}
-    ]
-
-    const optionsSelect = [
-        {value: 'tehran', label: 'تهران'},
-        {value: 'kashan', label: 'کاشان'},
-        {value: 'isfahan', label: 'اصفهان'}
+        {label: "خانم", value: "خانم",},
+        {label: "آقا", value: "آقا",}
     ]
 
     const [image, setImage] = useState();
-
+    // const [getIdStates, SetGetIdStates] = useState(1)
+    const [cities, setCities] = useState([])
+    const [states, setStates] = useState([])
 
     const handelDataPicker = (e) => {
-        formik.setFieldValue('birth_date', e)
+        const date_brith = `${e?.year}/${e?.month}/${e?.day}`
+        formik.setFieldValue('birth_date', date_brith)
     }
     const handelImageUpload = (e) => {
-        formik.setFieldValue("image", e.target.files[0])
+        formik.setFieldValue("picture", e.target.files[0])
         setImage(URL.createObjectURL(e.target.files[0]));
     }
-    const handelGetValueStates = (value) => {
 
-        formik.setFieldValue("states", value)
+
+    const handelGetValueStates = async (value) => {
+        const statesId = value.id
+        // SetGetIdStates(statesId)
+        const resCities = await getStatesSlugCities(statesId)
+        setCities(resCities.results ? resCities.results : [])
+        // console.log(cities)
+        formik.setFieldValue("states", statesId)
     }
 
-    const [skills, setSkills] = useState([]);
+    const handelGetValueCities = (value) => {
+        // console.log(value)
+        formik.setFieldValue('city', value.id)
+    }
 
-    const handleChangeSelectBox = (event) => {
-        const {
-            target: {value},
-        } = event;
-        setSkills(
-            typeof value === 'string' ? value.split(',') : value,
-        );
-        formik.setFieldValue("skills", skills)
-    };
+    const handelSkillsForm = (value) => {
+        const result = value.map(item => item.id)
+        formik.setFieldValue('skill', result)
+    }
 
+    const handelGetValueEducationLevel = (value) => {
+        formik.setFieldValue('education_level', value.id)
+    }
+    const handelGetValueReshte = (value) => {
+        formik.setFieldValue('major', value.id)
+    }
+    const handelGetValueRoles = (value) => {
 
+        formik.setFieldValue('role', [value.id])
+    }
+
+    useEffect(() => {
+        setStates(statesData)
+    }, [statesData, cities])
+
+    // console.log(formik.errors)
     return <>
 
         <div className=" rounded-tr-3xl p-4 md:p-6 lg:p-10 overflow-y-auto mt-10 h-screen">
@@ -206,7 +233,7 @@ const Register = () => {
 
                     <div className="w-[700px] mx-auto">
 
-                        <div className="flex justify-center mb-5">
+                        <div className="flex flex-col items-center  justify-center mb-5">
                             {/*file upload*/}
                             <Button component="label">
                                 {/*|| '/img/default.png'*/}
@@ -220,16 +247,16 @@ const Register = () => {
                                 />
                             </Button>
                             {
-                                formik.errors.image && formik.touched.image &&
+                                formik.errors.image &&
                                 <div className={'text-red-500'}>{formik.errors.image}</div>
                             }
                         </div>
 
                         <div className="grid grid-cols-2 row-span-6 space-y-5">
                             <div className="col-span-12 flex  max-sm:flex-wrap">
-                                <Input formik={formik} name={'firstname'} label={'نام'}
+                                <Input formik={formik} name={'first_name'} label={'نام'}
                                        className={'w-1/2 mx-2 md:w-full max-sm:w-full'}/>
-                                <Input formik={formik} name={'lastname'} label={'نام خانوادگی'}
+                                <Input formik={formik} name={'last_name'} label={'نام خانوادگی'}
                                        className={'w-1/2 mx-2 md:w-full max-sm:w-full'}/>
                             </div>
                             <div className="grid grid-cols-1 row-span-12 col-span-12 flex">
@@ -245,7 +272,7 @@ const Register = () => {
 
                             </div>
 
-                            <div className="">
+                            <div className="mx-2">
                                 <p className={'font-bold dark:text-white'}>جنسیت:</p>
                                 <ul className="grid w-full gap-6 md:grid-cols-2">
                                     <RadioInput name={'gender'} formik={formik} radioOption={radioOption}/>
@@ -274,94 +301,117 @@ const Register = () => {
                             </div>
 
                             <div className="grid grid-cols-12 row-span-12 col-span-12 gap-4">
-                                <div className="col-span-6">
-                                    {/*<Autocomplete*/}
-                                    {/*    value={formik.values.states}*/}
-                                    {/*    disablePortal*/}
-                                    {/*    id="combo-box-demo"*/}
-                                    {/*    options={statesData || []}*/}
-                                    {/*    sx={{width: 300}}*/}
-
-                                    {/*    renderInput={(params) =>*/}
-                                    {/*        <TextField {...params} label="Movie"/>}*/}
-                                    {/*/>*/}
-                                </div>
-                                <div className="col-span-6">
-                                    <label htmlFor="" className={'block text-black font-bold dark:text-white'}>استان</label>
-                                    <DropdownList
-                                        containerClassName={'inline-flex items-center font-bold justify-between w-full p-2 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100  dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-white'}
-                                        defaultValue=""
-                                        onChange={handelGetValueStates}
-                                        data={statesData?.results?.map(item => item.label)}
-                                        key={statesData?.results?.map(item => item.id)}
-                                        className={''}
+                                <div className="col-span-6 mx-2">
+                                    <label htmlFor=""
+                                           className={'block text-black font-bold dark:text-white'}>استان</label>
+                                    <DropdownList busy busySpinner={
+                                        <span className="fas fa-sync fa-spin"/>
+                                    }
+                                                  containerClassName={'inline-flex items-center font-bold justify-between w-full p-2 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100  dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-white'}
+                                                  dataKey="id"
+                                                  textField="label"
+                                                  defaultValue={'انتخاب کنید'}
+                                                  onChange={handelGetValueStates}
+                                                  data={states?.results}
                                     />
-                                    {/*{console.log(statesData?.results?.map(item => item))}*/}
+                                    {/*{console.log(statesData?.results)}*/}
+
+                                </div>
+                                <div className="col-span-6 mx-2">
+                                    <label htmlFor=""
+                                           className={'block text-black font-bold dark:text-white'}>شهر</label>
+                                    <DropdownList busy busySpinner={
+                                        <span className="fas fa-sync fa-spin"/>
+                                    }
+                                                  containerClassName={'inline-flex items-center font-bold justify-between w-full p-2 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100  dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-white'}
+                                                  dataKey="id"
+                                                  textField="title"
+                                                  onChange={handelGetValueCities}
+                                                  data={cities || []}
+
+                                    />
+
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-12 row-span-12 col-span-12 gap-4">
-                                <div className="col-span-12">
+                                <div className="col-span-6 mx-2">
+                                    <label htmlFor=""
+                                           className={'block text-black font-bold dark:text-white'}>درجه ی
+                                        تحصیلی</label>
+                                    <DropdownList busy busySpinner={
+                                        <span className="fas fa-sync fa-spin"/>
+                                    }
+                                                  containerClassName={'inline-flex items-center font-bold justify-between w-full p-2 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100  dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-white'}
+                                                  dataKey="id"
+                                                  textField="title"
+                                                  defaultValue={'انتخاب کنید'}
+                                                  onChange={handelGetValueEducationLevel}
+                                                  data={EducationLevelData?.results}
+                                    />
+                                </div>
 
+                                <div className="col-span-6 mx-2">
+                                    <label htmlFor=""
+                                           className={'block text-black font-bold dark:text-white'}>رشته تحصیلی</label>
+                                    <DropdownList busy busySpinner={
+                                        <span className="fas fa-sync fa-spin"/>
+                                    }
+                                                  containerClassName={'inline-flex items-center font-bold justify-between w-full p-2 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100  dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-white'}
+                                                  dataKey="id"
+                                                  textField="title"
+                                                  defaultValue={'انتخاب کنید'}
+                                                  onChange={handelGetValueReshte}
+                                                  data={dataReshte?.results}
+                                    />
+                                </div>
+                            </div>
+                            {/*{console.log(dataReshte)}*/}
 
-                                    <FormControl dir={'rtl'}
-                                                 className={'w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 rounded-lg'}>
-                                        <InputLabel id="demo-multiple-checkbox-label">تخصص</InputLabel>
-                                        <Select
-                                            labelId="demo-multiple-checkbox-label"
-                                            id="demo-multiple-checkbox"
-                                            multiple
-                                            value={skills}
-                                            onChange={handleChangeSelectBox}
-                                            input={<OutlinedInput label="Tag"/>}
-                                            renderValue={(selected) => selected.join(', ')}
-                                            // MenuProps={MenuProps}
-                                        >
-                                            {/*{console.log(statesData)}*/}
-                                            {
-                                                !isLoadingSkills && skillsData?.results.map((name) => (
-                                                    <MenuItem key={name.id} value={name.id}>
-                                                        <Checkbox
-                                                            checked={skills.indexOf(name.id) > -1}/>
-                                                        <ListItemText primary={name.title}/>
-                                                    </MenuItem>
-                                                ))
-                                            }
+                            <div className="grid grid-cols-12 row-span-12 col-span-12 gap-4">
+                                <div className="col-span-12 mx-2">
 
-                                        </Select>
-                                    </FormControl>
+                                    <label htmlFor=""
+                                           className={'block text-black font-bold dark:text-white'}>تخصص</label>
+                                    <Multiselect busy busySpinner={
+                                        <span className="fas fa-sync fa-spin"/>
+                                    }
+                                                 containerClassName={'inline-flex items-center font-bold justify-between w-full text-black bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-black dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-black hover:text-black hover:bg-gray-100  dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-black'}
+                                                 dataKey="id"
+                                                 textField="title"
 
+                                                 data={skillsData?.results}
+                                                 onChange={event => handelSkillsForm(event)}
+                                    />
+                                    {
+                                        formik.errors.skill && formik.touched.skill &&
+                                        <div className={'text-red-500'}>{formik.errors.skill}</div>
+                                    }
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-12 row-span-12 col-span-12 gap-4">
+                                <div className="col-span-12 mx-2">
+                                    <label htmlFor=""
+                                           className={'block text-black font-bold dark:text-white'}>نقش کاربر</label>
+                                    <DropdownList busy busySpinner={
+                                        <span className="fas fa-sync fa-spin"/>
+                                    }
+                                                  containerClassName={'inline-flex items-center font-bold justify-between w-full p-2 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100  dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-white'}
+                                                  dataKey="id"
+                                                  textField="name"
+                                                  defaultValue={'انتخاب کنید'}
+                                                  onChange={handelGetValueRoles}
+                                                  data={dataRoles?.results}
+                                    />
                                 </div>
                             </div>
 
-
-                            <div className="grid grid-cols-1 row-span-12 col-span-12 ">
+                            <div className="grid grid-cols-1 row-span-12 col-span-12 mx-2">
                                 <TextareaOption formik={formik} name={'address'} label={'آدرس'}/>
                             </div>
 
-                            <div className="grid grid-cols-12 row-span-12 col-span-12 gap-4">
-                                {/*<div className="col-span-6">*/}
-                                {/*    <SelectOption formik={formik}*/}
-                                {/*                  placeholder={'درجه تحصیلی'}*/}
-                                {/*                  onChange={value => formik.setFieldValue('level_educational', value.value)}*/}
 
-                                {/*                  value={formik.values.level_educational}*/}
-                                {/*                  options={optionsSelect}*/}
-                                {/*                  name={'level_educational'}*/}
-                                {/*    />*/}
-                                {/*</div>*/}
-                                {/*<div className="col-span-6">*/}
-                                {/*    <SelectOption formik={formik}*/}
-                                {/*                  placeholder={'رشته ی تحصیلی '}*/}
-                                {/*                  onChange={value => formik.setFieldValue('Field_of_Study', value.value)}*/}
-                                {/*                  value={formik.values.Field_of_Study}*/}
-                                {/*                  options={optionsSelect}*/}
-                                {/*                  name={'Field_of_Study'}*/}
-                                {/*    />*/}
-                                {/*</div>*/}
-                            </div>
-
-                            <div className="grid grid-cols-12 row-span-12 col-span-12 gap-4">
+                            <div className="grid grid-cols-12 row-span-12 col-span-12 gap-4 mx-2">
                                 <div className="col-span-6">
                                     <label htmlFor="brithDay">تاریخ تولد</label>
                                     <DtPicker
@@ -382,25 +432,12 @@ const Register = () => {
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-12 row-span-12 col-span-12 gap-4">
-                                <div className="col-span-12">
-                                    {/*<SelectOption formik={formik} name={'expertise'}*/}
-                                    {/*              options={optionsSelect}*/}
-                                    {/*              onChange={value => formik.setFieldValue('expertise', value.value)}*/}
-                                    {/*              placeholder={'تخصص'}*/}
-                                    {/*              value={formik.values.expertise}*/}
-                                    {/*              isMultiple={true}*/}
-                                    {/*/>*/}
-
-                                </div>
-
-                            </div>
-
                         </div>
 
-                        <button type={'submit'} disabled={!formik.isValid} className={'btn--primary'}>ارسال</button>
+                        <button type={'submit'} disabled={!formik.isValid}
+                                className={'btn--primary mt-3 w-full rounded-xl disabled:bg-primary-400'}>ارسال
+                        </button>
                     </div>
-
 
                 </div>
             </form>

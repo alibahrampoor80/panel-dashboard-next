@@ -1,4 +1,4 @@
-const Input = ({label, name, formik, type = 'text', className = ''}) => {
+const Input = ({label, name, formik, type = 'text', className = '', errorServer}) => {
 
     return <>
         <div className={`form-control ${className}`}>
@@ -11,9 +11,15 @@ const Input = ({label, name, formik, type = 'text', className = ''}) => {
             />
 
             {
-                formik.errors[name] && formik.touched[name] && <div className={'text-red-500'}>{formik.errors[name]}</div>
+                formik.errors[name] && formik.touched[name] &&
+                <div className={'text-red-500'}>{formik.errors[name]}</div>
             }
 
+            {
+                errorServer?.[name]?.map((itemError) => (
+                    <div className={'text-red-500'} key={itemError}>{itemError}</div>
+                ))
+            }
         </div>
 
     </>

@@ -9,8 +9,6 @@ export function createUser(data) {
         },
     }).then(({data}) => data);
 }
-
-
 export function createFastUser(data) {
     return http.post("/users/createQuickly/", data).then(({data}) => data);
 }

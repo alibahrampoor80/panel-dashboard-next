@@ -13,12 +13,13 @@ function withOpacity(variableName) {
 module.exports = {
     content: [
         // "./src/**/*.{html,js}",
+        './node_modules/flowbite-react/**/*.js',
         "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
         "./src/common/**/*.{js,ts,jsx,tsx,mdx}",
         "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
         "./node_modules/react-tailwindcss-select/dist/index.esm.js",
         'node_modules/preline/dist/*.js',
-       'react-widgets/styles.css',
+        'react-widgets/styles.css',
         require.resolve('react-widgets/styles.css'),
     ],
     darkMode: 'class',
@@ -66,7 +67,8 @@ module.exports = {
     plugins: [
         require("@tailwindcss/forms"),
         require('preline/plugin'),
-        require('react-widgets-tailwind')
+        require("flowbite/plugin"),
+        require('react-widgets-tailwind'),
     ],
 
 };

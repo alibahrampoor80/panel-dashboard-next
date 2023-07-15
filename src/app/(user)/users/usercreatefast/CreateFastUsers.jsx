@@ -14,12 +14,10 @@ import {createFastUser} from "@/services/createUsers";
 import {useState} from "react";
 import {ThreeDots} from "react-loader-spinner";
 import toast from "react-hot-toast";
-import Head from "next/head";
+import {Dropdown} from "flowbite-react";
+import BreadCrumbComponents from "@/components/BreadCrumb";
 
-
-
-
-export default function Page() {
+export default function CreateFastUsers() {
     const [errorField, setErrorField] = useState({})
     const {data: dataRoles, isLoading: isLoadingRoles} = useRoles()
 
@@ -96,39 +94,13 @@ export default function Page() {
     }
 
 
+
     return <>
 
-
         <div className=" rounded-tr-3xl p-4 md:p-6 lg:p-10 overflow-y-auto mt-10 h-screen">
-            <Head>
-                <title>sdsdfldsf</title>
-            </Head>
-            <div className="bread-crumb mb-5">
-                <ul className="flex items-center">
-                    <li className="inline-flex items-center">
-                        <Link href="#" className=" text-blue-500 transition-all duration-300 hover:text-blue-600">
-                            <HomeIcon className={'w-5 h-5'}/>
-                        </Link>
 
-                        <ChevronLeftIcon className={'w-5 h-5'}/>
-                    </li>
+            <BreadCrumbComponents/>
 
-
-                    <li className="inline-flex items-center">
-                        <Link href="#" className=" text-blue-500 transition-all duration-300 hover:text-blue-600">
-                            کاربران
-                        </Link>
-
-                        <ChevronLeftIcon className={'w-5 h-5'}/>
-                    </li>
-
-                    <li className="inline-flex items-center">
-                        <Link href="#" className=" text-blue-500 transition-all duration-300 hover:text-blue-600">
-                            ایجاد کاربر سریع
-                        </Link>
-                    </li>
-                </ul>
-            </div>
 
 
             <h1 className={'text-3xl'}>افزودن سریع کاربر</h1>
@@ -242,4 +214,5 @@ export default function Page() {
         </div>
 
     </>
+
 }

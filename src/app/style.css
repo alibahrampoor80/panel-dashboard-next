@@ -2,3 +2,11 @@
 .form-create-users-items {
     width: 50%;
 }
+
+.p-inputtext, .p-multiselect .p-multiselect-label.p-placeholder {
+    color: inherit !important;
+}
+
+.p-dropdown-filter {
+    margin-right: 0!important;
+}
